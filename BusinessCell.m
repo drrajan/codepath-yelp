@@ -46,6 +46,7 @@
     [self.ratingImageView setImageWithURL:[NSURL URLWithString:self.business.ratingImageUrl]];
     self.ratingLabel.text = [NSString stringWithFormat:@"%ld Reviews", self.business.numReviews];
     self.addressLabel.text = self.business.address;
+    self.categoryLabel.text = self.business.categories;
     self.distanceLabel.text = [NSString stringWithFormat:@"%.2f mi", self.business.distance];
 }
 
