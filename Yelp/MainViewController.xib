@@ -13,7 +13,7 @@
         </placeholder>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
         <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="i5M-Pr-FkT">
-            <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+            <rect key="frame" x="0.0" y="64" width="320" height="568"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="PhG-tp-pR4">
@@ -28,6 +28,7 @@
                 <constraint firstItem="PhG-tp-pR4" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" id="9ch-yE-EE2"/>
                 <constraint firstAttribute="bottom" secondItem="PhG-tp-pR4" secondAttribute="bottom" id="Tb9-QV-dNx"/>
             </constraints>
+            <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" prompted="NO"/>
         </view>
     </objects>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
