@@ -16,6 +16,14 @@
 @property (nonatomic, strong) NSArray *categories;
 @property (nonatomic, strong) NSMutableSet *selectedCategories;
 
+@property (nonatomic, strong) NSArray *sectionTitles;
+@property (nonatomic, strong) NSArray *sorts;
+@property (nonatomic, strong) NSString *sortCode;
+@property (nonatomic, strong) NSArray *distances;
+@property (nonatomic, strong) NSString *distanceCode;
+@property (nonatomic, strong) NSArray *deals;
+@property (nonatomic, strong) NSString *dealCode;
+
 @end
 
 @implementation FiltersViewController
@@ -45,7 +53,6 @@
     
     [self.tableView registerNib:[UINib nibWithNibName:@"SwitchCell" bundle:nil] forCellReuseIdentifier:@"SwitchCell"];
     
-    
 }
 
 - (void)didReceiveMemoryWarning {
@@ -55,29 +62,135 @@
 
 #pragma mark - Table view methods
 
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return self.categories.count;
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    NSLog(@"section: %ld, row: %ld", indexPath.section, indexPath.row);
+    
+    switch (indexPath.section) {
+        case 0:
+        {
+            SwitchCell *cell = [tableView dequeueReusableCellWithIdentifier:@"SwitchCell"];
+            cell.titleLabel.text = self.sorts[indexPath.row][@"name"];
+            cell.on = [self.sortCode isEqualToString:self.sorts[indexPath.row][@"code"]];
+            cell.delegate = self;
+            return cell;
+            break;
+
+        }
+        case 1:
+        {
+            SwitchCell *cell = [tableView dequeueReusableCellWithIdentifier:@"SwitchCell"];
+            cell.titleLabel.text = self.distances[indexPath.row][@"name"];
+            cell.on = [self.distanceCode isEqualToString:self.distances[indexPath.row][@"code"]];
+            cell.delegate = self;
+            return cell;
+            break;
+            
+        }
+        case 2:
+        {
+            SwitchCell *cell = [tableView dequeueReusableCellWithIdentifier:@"SwitchCell"];
+            cell.titleLabel.text = self.deals[indexPath.row];
+            cell.on = [self.dealCode isEqualToString:@"true"];
+            cell.delegate = self;
+            return cell;
+            break;
+            
+        }
+        case 3:
+        {
+            SwitchCell *cell = [tableView dequeueReusableCellWithIdentifier:@"SwitchCell"];
+            cell.titleLabel.text = self.categories[indexPath.row][@"name"];
+            cell.on = [self.selectedCategories containsObject:self.categories[indexPath.row]];
+            cell.delegate = self;
+            return cell;
+            break;
+        }
+            
+        default:
+            break;
+    }
+    
+    return nil;
 }
 
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    SwitchCell *cell = [tableView dequeueReusableCellWithIdentifier:@"SwitchCell"];
-    cell.titleLabel.text = self.categories[indexPath.row][@"name"];
-    cell.on = [self.selectedCategories containsObject:self.categories[indexPath.row]];
-    cell.delegate = self;
-    
-    return cell;
-    
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+    return self.sectionTitles.count;
 }
+
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
+    return [self.sectionTitles objectAtIndex:section];
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    switch (section) {
+        case 0:
+        {
+            return [self.sorts count];
+            break;
+        }
+        case 1:
+        {
+            return [self.distances count];
+            break;
+        }
+        case 2:
+        {
+            return [self.deals count];
+            break;
+        }
+        case 3:
+        {
+            return [self.categories count];
+            break;
+        }
+        default:
+            break;
+    }
+    return 0;
+}
+
+
 
 #pragma mark - Switch cell delegate methods
 
 - (void)switchCell:(SwitchCell *)cell didUpdateValue:(BOOL)value {
     NSIndexPath *indexPath = [self.tableView indexPathForCell:cell];
-    if (value) {
-        [self.selectedCategories addObject:self.categories[indexPath.row]];
-    } else {
-        [self.selectedCategories removeObject:self.categories[indexPath.row]];
+    switch (indexPath.section) {
+        case 0:
+        {
+            NSDictionary *sort = self.sorts[indexPath.row];
+            self.sortCode = sort[@"code"];
+            break;
+        }
+        case 1:
+        {
+            NSDictionary *distance = self.distances[indexPath.row];
+            self.sortCode = distance[@"code"];
+            break;
+        }
+        case 2:
+        {
+            if (value) {
+                self.dealCode = @"true";
+            } else {
+                self.dealCode = @"false";
+            }
+            break;
+        }
+        case 3:
+        {
+            if (value) {
+                [self.selectedCategories addObject:self.categories[indexPath.row]];
+            } else {
+                [self.selectedCategories removeObject:self.categories[indexPath.row]];
+            }
+            break;
+        }
+        default:
+            break;
     }
+    
 }
 
 #pragma mark - Private methods
@@ -85,6 +198,16 @@
 - (NSDictionary *)filters {
     NSMutableDictionary *filters = [NSMutableDictionary dictionary];
     
+    if (self.sortCode ) {
+        [filters setObject:self.sortCode forKey:@"sort"];
+    }
+    if (self.distanceCode ) {
+        [filters setObject:self.distanceCode forKey:@"radius_filter"];
+    }
+    if (self.dealCode ) {
+        [filters setObject:self.dealCode forKey:@"deals_filter"];
+    }
+
     if (self.selectedCategories.count > 0) {
         NSMutableArray *names = [NSMutableArray array];
         for (NSDictionary *category in self.selectedCategories) {
@@ -106,6 +229,20 @@
 }
 
 - (void)initCategories {
+    self.sectionTitles = @[@"Sort", @"Distance", @"Most Popular", @"Category"];
+
+    self.sorts = @[@{@"name" : @"Best Match", @"code": @"0"},
+                   @{@"name" : @"Distance", @"code": @"1"},
+                   @{@"name" : @"Rating", @"code": @"2"}];
+
+    self.distances = @[@{@"name" : @"Best Match", @"code": @""},
+                       @{@"name" : @"0.3 mi", @"code": @"0.3"},
+                       @{@"name" : @"1 mi", @"code": @"1"},
+                       @{@"name" : @"5 mi", @"code": @"5"},
+                       @{@"name" : @"20 mi", @"code": @"20"}];
+    
+    self.deals = @[@"Offering a Deal"];
+
     self.categories = @[@{@"name" : @"Afghan", @"code": @"afghani" },
                         @{@"name" : @"African", @"code": @"african" },
                         @{@"name" : @"American, New", @"code": @"newamerican" },

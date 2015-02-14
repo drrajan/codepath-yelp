@@ -54,3 +54,9 @@
 #define COCOAPODS_VERSION_MINOR_BDBOAuth1Manager 4
 #define COCOAPODS_VERSION_PATCH_BDBOAuth1Manager 1
 
+// THSegmentedControl
+#define COCOAPODS_POD_AVAILABLE_THSegmentedControl
+#define COCOAPODS_VERSION_MAJOR_THSegmentedControl 0
+#define COCOAPODS_VERSION_MINOR_THSegmentedControl 1
+#define COCOAPODS_VERSION_PATCH_THSegmentedControl 8
+

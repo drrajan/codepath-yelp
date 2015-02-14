@@ -23,13 +23,16 @@ PODS:
   - BDBOAuth1Manager (1.4.1):
     - AFNetworking/NSURLConnection (~> 2.4.0)
     - AFNetworking/NSURLSession (~> 2.4.0)
+  - THSegmentedControl (0.1.8)
 
 DEPENDENCIES:
   - AFNetworking
   - BDBOAuth1Manager (~> 1.4.0)
+  - THSegmentedControl
 
 SPEC CHECKSUMS:
   AFNetworking: 0aabc6fae66d6e5d039eeb21c315843c7aae51ab
   BDBOAuth1Manager: 0625ba20bd7d36461bbf6dc3d29276b5932b7409
+  THSegmentedControl: de1fdbb2fc7b8fc66236773bafe92227b88b96d8
 
 COCOAPODS: 0.35.0

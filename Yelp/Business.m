@@ -23,7 +23,7 @@
         
         self.name = dictionary[@"name"];
         self.imageUrl = dictionary[@"image_url"];
-        NSLog(@"name: %@", self.name);
+        //NSLog(@"name: %@", self.name);
         
         NSString *street = @"";
         if ([[dictionary valueForKeyPath:@"location.address"] count] > 0) {
