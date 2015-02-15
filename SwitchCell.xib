@@ -35,6 +35,7 @@
                     <constraint firstItem="jod-Bd-PHY" firstAttribute="centerY" secondItem="GMH-04-K42" secondAttribute="centerY" id="o3o-Wb-2OF"/>
                 </constraints>
             </tableViewCellContentView>
+            <inset key="separatorInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
             <connections>
                 <outlet property="titleLabel" destination="jod-Bd-PHY" id="Icq-Kr-q2R"/>
                 <outlet property="toggleSwitch" destination="GMH-04-K42" id="gyD-ui-HxO"/>

@@ -10,8 +10,6 @@
 
 @interface SwitchCell ()
 
-@property (weak, nonatomic) IBOutlet UISwitch *toggleSwitch;
-
 @end
 
 
