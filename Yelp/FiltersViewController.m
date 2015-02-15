@@ -48,9 +48,8 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view from its nib.
     
-    self.navigationController.navigationBar.translucent = NO;
+    self.title = @"Filters";
     
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Cancel" style:UIBarButtonItemStylePlain target:self
                                                                             action:@selector(onCancelButton)];
@@ -142,13 +141,12 @@
                 cell.toggleSwitch.hidden = YES;
                 cell.titleLabel.text = @"See All";
                 cell.titleLabel.textColor = [UIColor darkGrayColor];
-                cell.titleLabel.frame = CGRectMake(0, 0, cell.bounds.size.width, cell.bounds.size.height);
-                cell.titleLabel.textAlignment = NSTextAlignmentCenter;
             } else {
                 NSArray *categoryArray = self.categories_min;
                 if (self.isShowingCategories) {
                     categoryArray = self.categories;
                 }
+                cell.titleLabel.textColor = [UIColor blackColor];
                 cell.titleLabel.text = categoryArray[indexPath.row][@"name"];
                 cell.on = [self.selectedCategories containsObject:categoryArray[indexPath.row]];
             }
