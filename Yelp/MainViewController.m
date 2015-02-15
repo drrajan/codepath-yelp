@@ -59,10 +59,12 @@ NSString * const kYelpTokenSecret = @"xuuszHt3umq2LGfwi4NnnX2mz9w";
     
     self.searchBar = [[UISearchBar alloc] init];
     self.searchBar.delegate = self;
+    self.searchBar.searchBarStyle = UISearchBarStyleMinimal;
     
     self.navigationItem.titleView = self.searchBar;
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Filter" style:UIBarButtonItemStylePlain target:self action:@selector(onFilterButton)];
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Map" style:UIBarButtonItemStylePlain target:self action:@selector(onMapButton)];
+    [self.navigationItem.leftBarButtonItem setTitleTextAttributes:@{NSForegroundColorAttributeName:[UIColor redColor]} forState:UIControlStateNormal];
 }
 
 - (void)didReceiveMemoryWarning

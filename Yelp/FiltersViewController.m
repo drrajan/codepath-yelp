@@ -14,6 +14,7 @@
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
 @property (nonatomic, readonly) NSDictionary *filters;
 @property (nonatomic, strong) NSArray *categories;
+@property (nonatomic, strong) NSArray *categories_min;
 @property (nonatomic, strong) NSMutableSet *selectedCategories;
 
 @property (nonatomic, strong) NSArray *sectionTitles;
@@ -28,6 +29,7 @@
 @property (nonatomic, assign) NSInteger selectedDistanceIndex;
 @property (nonatomic, assign) BOOL isShowingSort;
 @property (nonatomic, assign) BOOL isShowingDistance;
+@property (nonatomic, assign) BOOL isShowingCategories;
 
 @end
 
@@ -64,6 +66,7 @@
     
     self.isShowingSort = NO;
     self.isShowingDistance = NO;
+    self.isShowingCategories = NO;
     
 }
 
@@ -135,8 +138,21 @@
         }
         case 3:
         {
-            cell.titleLabel.text = self.categories[indexPath.row][@"name"];
-            cell.on = [self.selectedCategories containsObject:self.categories[indexPath.row]];
+            if (!self.isShowingCategories && indexPath.row == [self.categories_min count]) {
+                cell.toggleSwitch.hidden = YES;
+                cell.titleLabel.text = @"See All";
+                cell.titleLabel.textColor = [UIColor darkGrayColor];
+                cell.titleLabel.frame = CGRectMake(0, 0, cell.bounds.size.width, cell.bounds.size.height);
+                cell.titleLabel.textAlignment = NSTextAlignmentCenter;
+            } else {
+                NSArray *categoryArray = self.categories_min;
+                if (self.isShowingCategories) {
+                    categoryArray = self.categories;
+                }
+                cell.titleLabel.text = categoryArray[indexPath.row][@"name"];
+                cell.on = [self.selectedCategories containsObject:categoryArray[indexPath.row]];
+            }
+
             return cell;
             break;
         }
@@ -173,6 +189,13 @@
             [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:1] withRowAnimation:UITableViewRowAnimationFade];
             
             break;
+        }
+        case 3:
+        {
+            if (!self.isShowingCategories && indexPath.row == [self.categories_min count]) {
+                self.isShowingCategories = YES;
+                [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:3] withRowAnimation:UITableViewRowAnimationNone];
+            }
         }
         default:
             break;
@@ -214,7 +237,11 @@
         }
         case 3:
         {
-            return [self.categories count];
+            if (!self.isShowingCategories) {
+                return [self.categories_min count] + 1;
+            } else {
+                return [self.categories count];
+            }
             break;
         }
         default:
@@ -256,10 +283,15 @@
         }
         case 3:
         {
+            NSArray *categoryArray = self.categories_min;
+            if (self.isShowingCategories) {
+                categoryArray = self.categories;
+            }
+            
             if (value) {
-                [self.selectedCategories addObject:self.categories[indexPath.row]];
+                [self.selectedCategories addObject:categoryArray[indexPath.row]];
             } else {
-                [self.selectedCategories removeObject:self.categories[indexPath.row]];
+                [self.selectedCategories removeObject:categoryArray[indexPath.row]];
             }
             break;
         }
@@ -318,6 +350,17 @@
                        @{@"name" : @"20 mi", @"code": @"32186.9"}];
     
     self.deals = @[@"Offering a Deal"];
+    
+    self.categories_min = @[@{@"name" : @"American, New", @"code": @"newamerican" },
+                            @{@"name" : @"Breakfast & Brunch", @"code": @"breakfast_brunch" },
+                            @{@"name" : @"Chinese", @"code": @"chinese" },
+                            @{@"name" : @"Fast Food", @"code": @"hotdogs" },
+                            @{@"name" : @"French", @"code": @"french" },
+                            @{@"name" : @"Indian", @"code": @"indpak" },
+                            @{@"name" : @"Japanese", @"code": @"japanese" },
+                            @{@"name" : @"Pizza", @"code": @"pizza" },
+                            @{@"name" : @"Steakhouses", @"code": @"steak" },
+                            @{@"name" : @"Thai", @"code": @"thai" }];
 
     self.categories = @[@{@"name" : @"Afghan", @"code": @"afghani" },
                         @{@"name" : @"African", @"code": @"african" },
