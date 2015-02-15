@@ -56,6 +56,7 @@
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Apply" style:UIBarButtonItemStylePlain target:self
                                                                             action:@selector(onApplyButton)];
     
+    [self loadFilters];
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
     //self.tableView.layer.cornerRadius = 5;
@@ -85,6 +86,7 @@
     [cell setLayoutMargins:UIEdgeInsetsZero];
     cell.accessoryType = UITableViewCellAccessoryNone;
     cell.toggleSwitch.hidden = NO;
+    cell.titleLabel.textColor = [UIColor blackColor];
     
     switch (indexPath.section) {
         case 0:
@@ -146,7 +148,6 @@
                 if (self.isShowingCategories) {
                     categoryArray = self.categories;
                 }
-                cell.titleLabel.textColor = [UIColor blackColor];
                 cell.titleLabel.text = categoryArray[indexPath.row][@"name"];
                 cell.on = [self.selectedCategories containsObject:categoryArray[indexPath.row]];
             }
@@ -304,13 +305,13 @@
 - (NSDictionary *)filters {
     NSMutableDictionary *filters = [NSMutableDictionary dictionary];
     
-    if (self.sortCode ) {
+    if (self.sortCode) {
         [filters setObject:self.sortCode forKey:@"sort"];
     }
-    if (self.distanceCode ) {
+    if (self.distanceCode) {
         [filters setObject:self.distanceCode forKey:@"radius_filter"];
     }
-    if (self.dealCode ) {
+    if (self.dealCode) {
         [filters setObject:self.dealCode forKey:@"deals_filter"];
     }
 
@@ -322,6 +323,11 @@
         NSString *categoryFilter = [names componentsJoinedByString:@","];
         [filters setObject:categoryFilter forKey:@"category_filter"];
     }
+    
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setObject:filters forKey:@"filters"];
+    [defaults synchronize];
+    
     return filters;
 }
 
@@ -332,6 +338,42 @@
 - (void)onApplyButton {
     [self.delegate filtersViewController:self didChangeFilters:self.filters];
     [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+- (void)loadFilters {
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSDictionary *filters = [defaults objectForKey:@"filters"];
+    if ([filters objectForKey:@"sort"]) {
+        self.sortCode = [filters objectForKey:@"sort"];
+        for (int i = 0; i < [self.sorts count]; i++) {
+            NSDictionary *sort = self.sorts[i];
+            if ([self.sortCode isEqualToString:sort[@"code"]]) {
+                self.selectedSortIndex = i;
+            }
+        }
+    }
+    if ([filters objectForKey:@"radius_filter"]) {
+        self.distanceCode = [filters objectForKey:@"radius_filter"];
+        for (int i = 0; i < [self.distances count]; i++) {
+            NSDictionary *distance = self.distances[i];
+            if ([self.distanceCode isEqualToString:distance[@"code"]]) {
+                self.selectedDistanceIndex = i;
+            }
+        }
+    }
+    if ([filters objectForKey:@"deals_filter"]) {
+        self.dealCode = [filters objectForKey:@"deals_filter"];
+    }
+    if ([filters objectForKey:@"category_filter"]) {
+        NSArray *categories = [[filters objectForKey:@"category_filter"] componentsSeparatedByString:@","];
+        for (int i = 0; i < [categories count]; i++) {
+            for (int j = 0; j < [self.categories count]; j++) {
+                if ([categories[i] isEqualToString:self.categories[j][@"code"]]) {
+                    [self.selectedCategories addObject:self.categories[j]];
+                }
+            }
+        }
+    }
 }
 
 - (void)initCategories {

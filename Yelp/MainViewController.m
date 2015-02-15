@@ -6,6 +6,7 @@
 //  Copyright (c) 2014 codepath. All rights reserved.
 //
 
+#import <MapKit/MapKit.h>
 #import "MainViewController.h"
 #import "YelpClient.h"
 #import "Business.h"
@@ -17,7 +18,7 @@ NSString * const kYelpConsumerSecret = @"CYeG-XScFYnBGUdQc08c02A74JQ";
 NSString * const kYelpToken = @"Zg8MT7f99KDuhhfj0VGpuq1YpDqZW7vf";
 NSString * const kYelpTokenSecret = @"xuuszHt3umq2LGfwi4NnnX2mz9w";
 
-@interface MainViewController () <UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate, FiltersViewControllerDelegate>
+@interface MainViewController () <UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate, MKMapViewDelegate, FiltersViewControllerDelegate>
 
 @property (nonatomic, strong) YelpClient *client;
 @property (nonatomic, strong) NSMutableArray *businesses;
@@ -25,7 +26,9 @@ NSString * const kYelpTokenSecret = @"xuuszHt3umq2LGfwi4NnnX2mz9w";
 @property (nonatomic, strong) NSString *queryString;
 @property (nonatomic, strong) UISearchBar *searchBar;
 @property (nonatomic, strong) UIActivityIndicatorView *loadingView;
-@property (weak, nonatomic) IBOutlet UITableView *tableView;
+@property (nonatomic, strong) IBOutlet UITableView *tableView;
+@property (nonatomic, strong) MKMapView *mapView;
+@property (nonatomic, assign) BOOL isMapView;
 @property (nonatomic, assign) BOOL isMoreResults;
 
 @end
@@ -67,6 +70,10 @@ NSString * const kYelpTokenSecret = @"xuuszHt3umq2LGfwi4NnnX2mz9w";
     self.loadingView.center = tableFooterView.center;
     [tableFooterView addSubview:self.loadingView];
     self.tableView.tableFooterView = tableFooterView;
+    
+    self.mapView = [[MKMapView alloc] initWithFrame:self.tableView.frame];
+    self.isMapView = NO;
+    self.mapView.delegate = self;
     
     self.title = @"Yelp";
     
@@ -131,6 +138,8 @@ NSString * const kYelpTokenSecret = @"xuuszHt3umq2LGfwi4NnnX2mz9w";
     self.queryString = self.searchBar.text;
     [self.businesses removeAllObjects];
     [self.filters removeAllObjects];
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults removeObjectForKey:@"filters"];
     [self.tableView reloadData];
     [self fetchBusinessesWithQuery:self.queryString params:nil];
     NSLog(@"search: %@", searchBar.text);
@@ -146,12 +155,40 @@ NSString * const kYelpTokenSecret = @"xuuszHt3umq2LGfwi4NnnX2mz9w";
     NSLog(@"filter query: %@ withFilters: %@", self.queryString, self.filters);
 }
 
+#pragma mark - Map delegate methods
+
+- (MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id<MKAnnotation>)annotation {
+    if ([annotation isKindOfClass:[MKUserLocation class]]) {
+        return nil;
+    }
+    
+    static NSString *identifier = @"myannotation";
+    MKPinAnnotationView *annotationView = (MKPinAnnotationView *)[mapView dequeueReusableAnnotationViewWithIdentifier:identifier];
+    
+    if (annotationView == nil)
+    {
+        annotationView = [[MKPinAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:identifier];
+        annotationView.canShowCallout = YES;
+        annotationView.animatesDrop = YES;
+        
+        annotationView.rightCalloutAccessoryView     = [UIButton buttonWithType:UIButtonTypeDetailDisclosure];
+        annotationView.rightCalloutAccessoryView.tag = 1;
+    }
+    else
+    {
+        annotationView.annotation = annotation;
+    }
+    
+    return annotationView;
+    
+}
+
 #pragma mark - Private methods
 
 - (void)fetchBusinessesWithQuery:(NSString *)query params:(NSDictionary *)params {
     NSLog(@"query: %@ withFilters: %@", query, params);
     [self.client searchWithTerm:query params:params success:^(AFHTTPRequestOperation *operation, id response) {
-        //NSLog(@"response: %@", response);
+        NSLog(@"response: %@", response);
         NSArray *businessDictionaries = response[@"businesses"];
         if ([businessDictionaries count]) {
             self.isMoreResults = YES;
@@ -162,6 +199,22 @@ NSString * const kYelpTokenSecret = @"xuuszHt3umq2LGfwi4NnnX2mz9w";
         }
 
         [self.businesses addObjectsFromArray:[Business businessesWithDictionaries:businessDictionaries]];
+        
+        NSMutableArray * annotationsToRemove = [self.mapView.annotations mutableCopy];
+        [annotationsToRemove removeObject:self.mapView.userLocation];
+        [self.mapView removeAnnotations:annotationsToRemove];
+        NSDictionary *regionDict = response[@"region"];
+        CLLocationCoordinate2D center = CLLocationCoordinate2DMake([[regionDict valueForKeyPath:@"center.latitude"] doubleValue], [[regionDict valueForKeyPath:@"center.longitude"] doubleValue]);
+        MKCoordinateSpan span = MKCoordinateSpanMake([[regionDict valueForKeyPath:@"span.latitude_delta"] doubleValue], [[regionDict valueForKeyPath:@"span.longitude_delta"] doubleValue]);
+        MKCoordinateRegion region = MKCoordinateRegionMake(center, span);
+        [self.mapView setRegion:region animated:YES];
+        for (NSDictionary *business in businessDictionaries) {
+            MKPointAnnotation *annotation = [[MKPointAnnotation alloc] init];
+            annotation.title = business[@"name"];
+            annotation.subtitle = [NSString stringWithFormat:@"%@ reviews", business[@"review_count"]];
+            annotation.coordinate = CLLocationCoordinate2DMake([[business valueForKeyPath:@"location.coordinate.latitude"] doubleValue], [[business valueForKeyPath:@"location.coordinate.longitude"] doubleValue]);
+            [self.mapView addAnnotation:annotation];
+        }
         
         [self.tableView reloadData];
         
@@ -182,6 +235,33 @@ NSString * const kYelpTokenSecret = @"xuuszHt3umq2LGfwi4NnnX2mz9w";
 
 - (void)onMapButton {
     NSLog(@"map clicked");
+    UIView *fromView, *toView;
+    
+    if (self.isMapView)
+    {
+        fromView = self.mapView;
+        toView = self.tableView;
+        NSLog(@"switching to table");
+    }
+    else
+    {
+        fromView = self.tableView;
+        toView = self.mapView;
+        NSLog(@"switching to map");
+    }
+    
+    [toView setHidden: YES];
+    [self.view addSubview: toView];
+    if (self.isMapView ) {
+        [self.view addConstraints: [NSLayoutConstraint constraintsWithVisualFormat: @"|[toView]|" options: 0 metrics: nil views: NSDictionaryOfVariableBindings(self.view, toView)]];
+        [self.view addConstraints: [NSLayoutConstraint constraintsWithVisualFormat: @"V:|[toView]|" options: 0 metrics: nil views: NSDictionaryOfVariableBindings(self.view, toView)]];
+    }
+    
+    [UIView transitionFromView: fromView toView: toView duration: 1.0 options: UIViewAnimationOptionTransitionFlipFromRight | UIViewAnimationOptionShowHideTransitionViews completion:^(BOOL finished) {
+        [fromView removeFromSuperview];
+    }];
+    
+    self.isMapView = !self.isMapView;
 }
 
 @end
