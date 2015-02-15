@@ -50,7 +50,7 @@
     [super viewDidLoad];
     
     self.title = @"Filters";
-    
+    self.navigationController.navigationBar.titleTextAttributes = @{NSForegroundColorAttributeName : [UIColor whiteColor]};
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Cancel" style:UIBarButtonItemStylePlain target:self
                                                                             action:@selector(onCancelButton)];
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Apply" style:UIBarButtonItemStylePlain target:self
@@ -59,9 +59,6 @@
     [self loadFilters];
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
-    //self.tableView.layer.cornerRadius = 5;
-    //self.tableView.layer.borderWidth = 0.2;
-    
     [self.tableView registerNib:[UINib nibWithNibName:@"SwitchCell" bundle:nil] forCellReuseIdentifier:@"SwitchCell"];
     
     self.isShowingSort = NO;
@@ -86,6 +83,7 @@
     [cell setLayoutMargins:UIEdgeInsetsZero];
     cell.accessoryType = UITableViewCellAccessoryNone;
     cell.toggleSwitch.hidden = NO;
+    cell.toggleSwitch.onTintColor = [[[UIApplication sharedApplication] keyWindow] tintColor];
     cell.titleLabel.textColor = [UIColor blackColor];
     
     switch (indexPath.section) {

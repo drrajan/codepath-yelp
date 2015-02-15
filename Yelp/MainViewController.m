@@ -12,6 +12,7 @@
 #import "Business.h"
 #import "BusinessCell.h"
 #import "FiltersViewController.h"
+#import "DetailViewController.h"
 
 NSString * const kYelpConsumerKey = @"VBpXD38E4NX5yXqIWqGYIA";
 NSString * const kYelpConsumerSecret = @"CYeG-XScFYnBGUdQc08c02A74JQ";
@@ -85,7 +86,6 @@ NSString * const kYelpTokenSecret = @"xuuszHt3umq2LGfwi4NnnX2mz9w";
     self.navigationItem.titleView = self.searchBar;
     self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Filter" style:UIBarButtonItemStylePlain target:self action:@selector(onFilterButton)];
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Map" style:UIBarButtonItemStylePlain target:self action:@selector(onMapButton)];
-    [self.navigationItem.leftBarButtonItem setTitleTextAttributes:@{NSForegroundColorAttributeName:[UIColor redColor]} forState:UIControlStateNormal];
 }
 
 - (void)didReceiveMemoryWarning
@@ -121,20 +121,42 @@ NSString * const kYelpTokenSecret = @"xuuszHt3umq2LGfwi4NnnX2mz9w";
     return cell;
 }
 
+- (void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    
+    DetailViewController *vc = [[DetailViewController alloc] init];
+    
+    vc.business = self.businesses[indexPath.row];
+  
+    [self.navigationController pushViewController:vc animated:YES];
+}
+
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+    return 1;
+}
+
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
+    
+    if ([self.filters count] > 0) {
+        NSString *sortString = [self.filters objectForKey:@"sort"] ? @"sort, " : @"";
+        NSString *distanceString = [self.filters objectForKey:@"radius_filter"] ? @"distance, " : @"";
+        NSString *dealsString = [self.filters objectForKey:@"deals_filter"] ? @"deals, " : @"";
+        NSString *categoryString = [self.filters objectForKey:@"category_filter"] ? [self.filters objectForKey:@"category_filter"] : @"";
+
+        if (!([sortString isEqualToString:@""] && [distanceString isEqualToString:@""] && [categoryString isEqualToString:@""])) {
+            NSString *filterString = [NSString stringWithFormat:@"Filter: %@%@%@%@", sortString, distanceString, dealsString, categoryString];
+            return filterString;
+        }
+    }
+    
+    return @"";
+}
+
+
 #pragma mark - Search bar methods
-
-- (void)searchBarTextDidBeginEditing:(UISearchBar *)searchBar {
-    [searchBar setShowsCancelButton:YES animated:YES];
-}
-
-- (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar {
-    [self.searchBar resignFirstResponder];
-    [searchBar setShowsCancelButton:NO animated:YES];
-}
 
 - (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar {
     [self.searchBar resignFirstResponder];
-    [searchBar setShowsCancelButton:NO animated:YES];
     self.queryString = self.searchBar.text;
     [self.businesses removeAllObjects];
     [self.filters removeAllObjects];
@@ -242,12 +264,14 @@ NSString * const kYelpTokenSecret = @"xuuszHt3umq2LGfwi4NnnX2mz9w";
         fromView = self.mapView;
         toView = self.tableView;
         NSLog(@"switching to table");
+        self.navigationItem.rightBarButtonItem.title = @"Map";
     }
     else
     {
         fromView = self.tableView;
         toView = self.mapView;
         NSLog(@"switching to map");
+        self.navigationItem.rightBarButtonItem.title = @"List";
     }
     
     [toView setHidden: YES];
