@@ -36,7 +36,7 @@
     
     MKPointAnnotation *annotation = [[MKPointAnnotation alloc] init];
     annotation.title = self.business.name;
-    annotation.subtitle = [NSString stringWithFormat:@"%ld reviews", self.business.numReviews];
+    annotation.subtitle = [NSString stringWithFormat:@"%@✻ %ld reviews", self.business.rating, self.business.numReviews];
     annotation.coordinate = center;
     [self.mapView addAnnotation:annotation];
     

@@ -235,7 +235,7 @@ NSString * const kYelpTokenSecret = @"xuuszHt3umq2LGfwi4NnnX2mz9w";
         for (NSDictionary *business in businessDictionaries) {
             MKPointAnnotation *annotation = [[MKPointAnnotation alloc] init];
             annotation.title = business[@"name"];
-            annotation.subtitle = [NSString stringWithFormat:@"%@ reviews", business[@"review_count"]];
+            annotation.subtitle = [NSString stringWithFormat:@"%@✻ %@ reviews", business[@"rating"], business[@"review_count"]];
             annotation.coordinate = CLLocationCoordinate2DMake([[business valueForKeyPath:@"location.coordinate.latitude"] doubleValue], [[business valueForKeyPath:@"location.coordinate.longitude"] doubleValue]);
             [self.mapView addAnnotation:annotation];
         }

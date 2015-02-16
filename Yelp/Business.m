@@ -37,6 +37,7 @@
         
         self.numReviews = [dictionary[@"review_count"] integerValue];
         self.ratingImageUrl = dictionary[@"rating_img_url"];
+        self.rating = dictionary[@"rating"];
         float milesPerMeter = 0.000621371;
         self.distance = [dictionary[@"distance"] integerValue] * milesPerMeter;
         
