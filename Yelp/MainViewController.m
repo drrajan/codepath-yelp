@@ -43,6 +43,9 @@ NSString * const kYelpTokenSecret = @"xuuszHt3umq2LGfwi4NnnX2mz9w";
         
         self.businesses = [NSMutableArray array];
         self.filters = [NSMutableDictionary dictionary];
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        [defaults removeObjectForKey:@"filters"];
+        
         // You can register for Yelp API keys here: http://www.yelp.com/developers/manage_api_keys
         self.client = [[YelpClient alloc] initWithConsumerKey:kYelpConsumerKey consumerSecret:kYelpConsumerSecret accessToken:kYelpToken accessSecret:kYelpTokenSecret];
         
@@ -81,6 +84,7 @@ NSString * const kYelpTokenSecret = @"xuuszHt3umq2LGfwi4NnnX2mz9w";
     self.searchBar = [[UISearchBar alloc] init];
     self.searchBar.delegate = self;
     self.searchBar.searchBarStyle = UISearchBarStyleMinimal;
+    self.searchBar.text = self.queryString;
     
     self.navigationController.navigationBar.translucent = NO;
     self.navigationItem.titleView = self.searchBar;
@@ -210,7 +214,6 @@ NSString * const kYelpTokenSecret = @"xuuszHt3umq2LGfwi4NnnX2mz9w";
 - (void)fetchBusinessesWithQuery:(NSString *)query params:(NSDictionary *)params {
     NSLog(@"query: %@ withFilters: %@", query, params);
     [self.client searchWithTerm:query params:params success:^(AFHTTPRequestOperation *operation, id response) {
-        NSLog(@"response: %@", response);
         NSArray *businessDictionaries = response[@"businesses"];
         if ([businessDictionaries count]) {
             self.isMoreResults = YES;

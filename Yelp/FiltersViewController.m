@@ -55,6 +55,7 @@
                                                                             action:@selector(onCancelButton)];
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Apply" style:UIBarButtonItemStylePlain target:self
                                                                             action:@selector(onApplyButton)];
+    self.navigationController.navigationBar.translucent = NO;
     
     [self loadFilters];
     self.tableView.delegate = self;
