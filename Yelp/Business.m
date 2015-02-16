@@ -23,7 +23,6 @@
         
         self.name = dictionary[@"name"];
         self.imageUrl = dictionary[@"image_url"];
-        //NSLog(@"name: %@", self.name);
         
         NSString *street = @"";
         if ([[dictionary valueForKeyPath:@"location.address"] count] > 0) {
@@ -40,6 +39,9 @@
         self.ratingImageUrl = dictionary[@"rating_img_url"];
         float milesPerMeter = 0.000621371;
         self.distance = [dictionary[@"distance"] integerValue] * milesPerMeter;
+        
+        self.latitude = [dictionary valueForKeyPath:@"location.coordinate.latitude"];
+        self.longitude = [dictionary valueForKeyPath:@"location.coordinate.longitude"];
     }
     return self;
 }

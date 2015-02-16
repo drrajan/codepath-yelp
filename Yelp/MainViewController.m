@@ -177,7 +177,7 @@ NSString * const kYelpTokenSecret = @"xuuszHt3umq2LGfwi4NnnX2mz9w";
     self.filters = (NSMutableDictionary *)filters;
     [self.businesses removeAllObjects];
     [self fetchBusinessesWithQuery:self.queryString params:self.filters];
-    //fire a network event
+
     NSLog(@"filter query: %@ withFilters: %@", self.queryString, self.filters);
 }
 
@@ -198,7 +198,6 @@ NSString * const kYelpTokenSecret = @"xuuszHt3umq2LGfwi4NnnX2mz9w";
         annotationView.animatesDrop = YES;
         
         annotationView.rightCalloutAccessoryView     = [UIButton buttonWithType:UIButtonTypeDetailDisclosure];
-        annotationView.rightCalloutAccessoryView.tag = 1;
     }
     else
     {

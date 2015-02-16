@@ -31,6 +31,7 @@
 		639507181A8C405300DD3506 /* SwitchCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 639507161A8C405300DD3506 /* SwitchCell.xib */; };
 		639507341A9139DD00DD3506 /* DetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 639507321A9139DD00DD3506 /* DetailViewController.m */; };
 		639507351A9139DD00DD3506 /* DetailViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 639507331A9139DD00DD3506 /* DetailViewController.xib */; };
+		639507381A91731B00DD3506 /* UIImageView+Yelp.m in Sources */ = {isa = PBXBuildFile; fileRef = 639507371A91731B00DD3506 /* UIImageView+Yelp.m */; };
 		63E591F41F684901AF8C1C19 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9DEC6D18C14F46F8AF2EA320 /* libPods.a */; };
 /* End PBXBuildFile section */
 
@@ -81,6 +82,8 @@
 		639507311A9139DD00DD3506 /* DetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DetailViewController.h; sourceTree = "<group>"; };
 		639507321A9139DD00DD3506 /* DetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DetailViewController.m; sourceTree = "<group>"; };
 		639507331A9139DD00DD3506 /* DetailViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = DetailViewController.xib; sourceTree = "<group>"; };
+		639507361A91731B00DD3506 /* UIImageView+Yelp.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImageView+Yelp.h"; sourceTree = "<group>"; };
+		639507371A91731B00DD3506 /* UIImageView+Yelp.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImageView+Yelp.m"; sourceTree = "<group>"; };
 		9DEC6D18C14F46F8AF2EA320 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		DDC86E6A889C0665201A025A /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -177,6 +180,8 @@
 				42FD6C5918DC286B000BF2B9 /* AppDelegate.h */,
 				42FD6C5A18DC286B000BF2B9 /* AppDelegate.m */,
 				42FD6C5C18DC286B000BF2B9 /* Images.xcassets */,
+				639507361A91731B00DD3506 /* UIImageView+Yelp.h */,
+				639507371A91731B00DD3506 /* UIImageView+Yelp.m */,
 				42FD6C5118DC286B000BF2B9 /* Supporting Files */,
 			);
 			path = Yelp;
@@ -382,6 +387,7 @@
 				639507171A8C405300DD3506 /* SwitchCell.m in Sources */,
 				639507341A9139DD00DD3506 /* DetailViewController.m in Sources */,
 				639507081A8C0EF500DD3506 /* Business.m in Sources */,
+				639507381A91731B00DD3506 /* UIImageView+Yelp.m in Sources */,
 				42FD6C5B18DC286B000BF2B9 /* AppDelegate.m in Sources */,
 				42FD6C5718DC286B000BF2B9 /* main.m in Sources */,
 				420474F618DC299500E88E07 /* YelpClient.m in Sources */,

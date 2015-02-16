@@ -7,6 +7,7 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="DetailViewController">
             <connections>
+                <outlet property="mapView" destination="T3L-Ue-hvY" id="dNa-yx-r2q"/>
                 <outlet property="tableView" destination="zeE-tU-T6m" id="vTz-g3-Y7S"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
@@ -16,17 +17,27 @@
             <rect key="frame" x="0.0" y="94" width="320" height="504"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
+                <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="T3L-Ue-hvY">
+                    <rect key="frame" x="0.0" y="86" width="320" height="418"/>
+                </mapView>
                 <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="zeE-tU-T6m">
-                    <rect key="frame" x="0.0" y="0.0" width="320" height="504"/>
+                    <rect key="frame" x="0.0" y="0.0" width="320" height="85"/>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="85" id="Ul0-6T-ISk"/>
+                    </constraints>
                 </tableView>
             </subviews>
             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
             <constraints>
+                <constraint firstAttribute="trailing" secondItem="T3L-Ue-hvY" secondAttribute="trailing" id="32V-4p-kqg"/>
+                <constraint firstItem="T3L-Ue-hvY" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="3EI-YN-HRW"/>
                 <constraint firstAttribute="trailing" secondItem="zeE-tU-T6m" secondAttribute="trailing" id="B3x-yS-4i5"/>
+                <constraint firstAttribute="bottom" secondItem="T3L-Ue-hvY" secondAttribute="bottom" id="EcX-cn-F3U"/>
                 <constraint firstItem="zeE-tU-T6m" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="JXX-yO-yIp"/>
+                <constraint firstItem="T3L-Ue-hvY" firstAttribute="top" secondItem="zeE-tU-T6m" secondAttribute="bottom" constant="1" id="LBC-cg-AGx"/>
+                <constraint firstItem="T3L-Ue-hvY" firstAttribute="top" secondItem="zeE-tU-T6m" secondAttribute="bottom" constant="1" id="Uvu-EZ-Sde"/>
                 <constraint firstItem="zeE-tU-T6m" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" id="qCd-Hq-SD9"/>
-                <constraint firstAttribute="bottom" secondItem="zeE-tU-T6m" secondAttribute="bottom" id="smw-BJ-Hvr"/>
             </constraints>
             <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" translucent="NO" prompted="NO"/>
             <point key="canvasLocation" x="520" y="429"/>

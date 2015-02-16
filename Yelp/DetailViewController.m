@@ -6,12 +6,14 @@
 //  Copyright (c) 2015 codepath. All rights reserved.
 //
 
+#import <MapKit/MapKit.h>
 #import "DetailViewController.h"
 #import "BusinessCell.h"
 #import "UIImageView+AFNetworking.h"
 
-@interface DetailViewController () <UITableViewDataSource, UITableViewDelegate>
+@interface DetailViewController () <UITableViewDataSource, UITableViewDelegate, MKMapViewDelegate>
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
+@property (weak, nonatomic) IBOutlet MKMapView *mapView;
 
 @end
 
@@ -27,7 +29,16 @@
     self.tableView.rowHeight = UITableViewAutomaticDimension;
     self.tableView.estimatedRowHeight = 85;
     
+    CLLocationCoordinate2D center = CLLocationCoordinate2DMake([self.business.latitude doubleValue], [self.business.longitude doubleValue]);
+    MKCoordinateSpan span = MKCoordinateSpanMake(0, 0);
+    MKCoordinateRegion region = MKCoordinateRegionMake(center, span);
+    [self.mapView setRegion:region animated:YES];
     
+    MKPointAnnotation *annotation = [[MKPointAnnotation alloc] init];
+    annotation.title = self.business.name;
+    annotation.subtitle = [NSString stringWithFormat:@"%ld reviews", self.business.numReviews];
+    annotation.coordinate = center;
+    [self.mapView addAnnotation:annotation];
     
 }
 
@@ -57,5 +68,31 @@
  
     return nil;
 }
+
+#pragma mark - Map delegate methods
+
+- (MKAnnotationView *)mapView:(MKMapView *)mapView viewForAnnotation:(id<MKAnnotation>)annotation {
+    if ([annotation isKindOfClass:[MKUserLocation class]]) {
+        return nil;
+    }
+    
+    static NSString *identifier = @"myannotation";
+    MKPinAnnotationView *annotationView = (MKPinAnnotationView *)[mapView dequeueReusableAnnotationViewWithIdentifier:identifier];
+    
+    if (annotationView == nil)
+    {
+        annotationView = [[MKPinAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:identifier];
+        annotationView.canShowCallout = YES;
+        annotationView.animatesDrop = YES;
+    }
+    else
+    {
+        annotationView.annotation = annotation;
+    }
+    
+    return annotationView;
+    
+}
+
 
 @end
