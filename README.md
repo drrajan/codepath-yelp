@@ -33,8 +33,8 @@ Time spent: 18 hours
 #### Notes
 - Added filters selected on main search page in table header. Would need some refactoring to display exact sort/distance values like real Yelp app.
 - Added fade for thumbnail images (same as in Rotten Tomatoes app)
-- Restaurant detail page was only partially implemented, had some trouble figuring out auto layout constraints so didn't end up adding all the fields.
+- Restaurant detail page was only partially implemented, had some trouble figuring out auto layout constraints so didn't end up adding all the fields in time.
 
 ### Walkthrough
 
-![Video Walkthrough](...)
+![Video Walkthrough](https://github.com/drrajan/codepath-yelp/raw/master/walkthrough.gif)
